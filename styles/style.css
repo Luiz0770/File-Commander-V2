@@ -1,0 +1,83 @@
+*{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+/* New Task */
+
+.new-task {
+	border-bottom: 1px solid #ccc;
+}
+
+/*  Fim New Task */
+
+/* Cards */
+
+#producao {
+	padding: 0 2em;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	justify-content: center;
+	align-content: center;
+	gap: 1rem;
+}
+
+.card {
+	padding: 1rem;
+	box-shadow: 1px 1px 25px 1px #ccc;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	border-radius: 12px;
+}
+
+.text-data, .text-producao {
+	font-size: 20px;
+	font-weight: 700;
+}
+
+#data, #qtd-producao {
+	color: orange;
+	font-weight: 400;
+	font-size: 28px;
+}
+
+.btn-card {
+	background-color: orange;
+	padding: .5rem 1rem;
+	border-radius: 10px;
+	border: none;
+	color: white;
+	margin-top: 5px;
+	transition: .2s;
+	font-size: 16px;
+	display: flex;
+	width: max-content;
+}
+
+.btn-card:hover {
+	scale: 1.05;
+}
+
+@media screen and (max-width < 768) {
+	#producao {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 1100px) {
+	#producao {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	#producao {
+		grid-template-columns: 1fr;
+	}
+}
