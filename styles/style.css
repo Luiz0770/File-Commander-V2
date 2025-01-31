@@ -28,41 +28,10 @@ body {
 }
 
 .card {
-	padding: 1rem;
-	box-shadow: 1px 1px 25px 1px #ccc;
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-	border-radius: 12px;
+	box-shadow: 1px 1px 15px 1px #ccc;
 }
 
-.text-data, .text-producao {
-	font-size: 20px;
-	font-weight: 700;
-}
-
-#data, #qtd-producao {
-	color: orange;
-	font-weight: 400;
-	font-size: 28px;
-}
-
-.btn-card {
-	background-color: orange;
-	padding: .5rem 1rem;
-	border-radius: 10px;
-	border: none;
-	color: white;
-	margin-top: 5px;
-	transition: .2s;
-	font-size: 16px;
-	display: flex;
-	width: max-content;
-}
-
-.btn-card:hover {
-	scale: 1.05;
-}
+/* Fim Cards */
 
 @media screen and (max-width < 768) {
 	#producao {
