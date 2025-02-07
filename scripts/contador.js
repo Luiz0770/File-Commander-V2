@@ -1,18 +1,37 @@
 let listaProducao = localStorage.getItem("producao") ? JSON.parse(localStorage.getItem("producao")) : [];
-let qtd = localStorage.getItem("quantidade") ? parseInt(localStorage.getItem("quantidade")) : 0;
 
 const btnAdicionar = document.getElementById("btn-adicionar");
 const btnDiminuir = document.getElementById("btn-diminuir");
 const btnSalvar = document.getElementById("btn-salvar");
+const btnEditar = document.getElementById("btn-editar");
 const contador = document.getElementById("contador");
+const filtro = document.getElementById('selectFiltro')
 
 const exampleModal = document.getElementById('exampleModal');
 if (exampleModal) {
 	exampleModal.addEventListener('show.bs.modal', () => {
+		btnEditar.style.display = 'none'
+		btnSalvar.style.display = 'block'
+		
+		let qtd = 0;
 		contador.value = qtd;
 		const selectType = document.getElementById('selectType');
 		const radiosSection = document.getElementById('radios-section');
 		const radios = document.querySelectorAll('input[name="mandadoType"]');
+
+		btnAdicionar.addEventListener("click", () => {
+			qtd += 1;
+			contador.value = qtd;
+		})
+		btnDiminuir.addEventListener("click", () => {
+			if (contador.value <= 0) {
+				alert("Não é possivel diminuir!")
+			}
+			else {
+				qtd -= 1;
+				contador.value = qtd;
+			}
+		})
 
 		btnSalvar.removeEventListener("click", salvarTarefa);
 		btnSalvar.addEventListener("click", salvarTarefa, { once: true });
@@ -27,6 +46,7 @@ if (exampleModal) {
 		});
 
 		function salvarTarefa() {
+			console.log("criar")
 			let mandadoType = null;
 			if (selectType.value === 'mandado') {
 				mandadoType = 0;
@@ -56,10 +76,10 @@ if (exampleModal) {
 					contador.value = qtd;
 					selectType.value = '0'
 					radiosSection.style.display = 'none';
-					
-					exibirCardNaTela();
+
+					exibirCardNaTela(listaProducao);
 					fecharModal()
-				} else{
+				} else {
 					fecharModal()
 				}
 			}
@@ -71,34 +91,34 @@ if (exampleModal) {
 	})
 }
 
-btnAdicionar.addEventListener("click", () => {
-	qtd++;
-	localStorage.setItem("quantidade", qtd);
-	contador.value = qtd;
-	console.log(qtd);
-});
+function adicionarQuantidade(qtd) {
 
-btnDiminuir.addEventListener("click", () => {
-	if (contador.value <= 0) {
-		alert("Não é possivel diminuir!")
+}
+
+function dimiuirQuantidade(qtd) {
+
+}
+
+filtro.addEventListener('change', () => {
+	if (filtro.value !== '0') {
+		listaFiltrada = listaProducao.filter(element => element.documentoType === filtro.value)
+		exibirCardNaTela(listaFiltrada);
 	}
 	else {
-		qtd--;
-		localStorage.setItem("quantidade", qtd);
-		contador.value = qtd;
-		console.log(qtd);
+		exibirCardNaTela(listaProducao);
 	}
-});
+})
+
 
 function fecharModal() {
 	const modal = bootstrap.Modal.getInstance(exampleModal);
 	modal.hide();
 }
 
-function exibirCardNaTela() {
+function exibirCardNaTela(listaExibir) {
 	const divProducao = document.getElementById("producao");
 	divProducao.innerHTML = "";
-	listaProducao.forEach((producao) => {
+	listaExibir.forEach((producao) => {
 		criarCards(producao);
 	});
 }
@@ -115,9 +135,101 @@ function excluirCard(producao) {
 	if (confirm("Você realmente deseja excluir essa produção?")) {
 		listaProducao = listaProducao.filter((element) => element.id !== producao.id);
 		localStorage.setItem("producao", JSON.stringify(listaProducao));
-		exibirCardNaTela();
+		exibirCardNaTela(listaProducao);
 	}
 }
+
+function editarCard(producao) {
+	const modal = new bootstrap.Modal(exampleModal);
+	modal.show();
+	btnEditar.style.display = 'block';
+	btnSalvar.style.display = 'none';
+	let qtd = producao.qtd
+
+	btnAdicionar.addEventListener("click", () => {
+		qtd += 1;
+		contador.value = qtd;
+	})
+	btnDiminuir.addEventListener("click", () => {
+		if (contador.value <= 0) {
+			alert("Não é possivel diminuir!")
+		}
+		else {
+			qtd -= 1;
+			contador.value = qtd;
+		}
+	})
+
+	contador.value = producao.qtd;  // Define a quantidade no campo contador
+	const selectType = document.getElementById('selectType');
+	const radiosSection = document.getElementById('radios-section');
+	const radios = document.querySelectorAll('input[name="mandadoType"]');
+
+	// Se o tipo de documento for "mandado", exibe as opções de mandado
+	if (producao.documentoType === 'mandado') {
+		selectType.value = 'mandado';
+		radiosSection.style.display = 'block';
+		radios.forEach(radio => {
+			if (radio.value === producao.mandadoType) {
+				radio.checked = true;
+			}
+		});
+	} else {
+		selectType.value = producao.documentoType;
+		radiosSection.style.display = 'none';
+	}
+
+	// Remover o evento anterior e adicionar um novo para salvar
+	btnEditar.removeEventListener("click", editarTarefa);
+	btnEditar.addEventListener("click", editarTarefa, { once: true });
+
+	// Função para salvar a tarefa editada
+	function editarTarefa() {
+		console.log("editar")
+		let mandadoType = null;
+		if (selectType.value === 'mandado') {
+			mandadoType = 0;
+			radios.forEach(radio => {
+				if (radio.checked) {
+					mandadoType = radio.value;
+				}
+			});
+		}
+
+		if (selectType.value != 0 && contador.value > 0 && mandadoType !== 0) {
+			if (confirm("Você deseja salvar as alterações?")) {
+				const data = criarData();
+
+				producao.qtd = qtd;
+				producao.documentoType = selectType.value;
+				producao.mandadoType = mandadoType;
+				producao.data = data;
+
+				// Atualiza no localStorage
+				listaProducao = listaProducao.map(item =>
+					item.id === producao.id ? producao : item
+				);
+				localStorage.setItem("producao", JSON.stringify(listaProducao));
+
+				// Zera os valores e fecha o modal
+				qtd = 0;
+				localStorage.setItem("quantidade", qtd);
+				contador.value = qtd;
+				selectType.value = '0';
+				radiosSection.style.display = 'none';
+
+				exibirCardNaTela(listaProducao);
+				fecharModal();
+			} else {
+				fecharModal();
+			}
+		} else {
+			alert("Preencha os campos corretamente!");
+			fecharModal();
+		}
+	}
+}
+
 
 function criarCards(producao) {
 	const divProducao = document.getElementById("producao");
@@ -127,8 +239,16 @@ function criarCards(producao) {
 
 	// Cabeçalho do card
 	const divCardHeader = document.createElement('div');
-	divCardHeader.classList.add('card-header', 'bg-primary', 'text-white');
-	const documentoText = `${producao.documentoType} ${producao.documentoType === 'mandado' ? '-' + producao.mandadoType : ''}`;
+	divCardHeader.classList.add('card-header', 'text-white');
+	if (producao.documentoType === 'medida') {
+		divCardHeader.classList.add('bg-primary');
+	} else if (producao.documentoType === 'mandado') {
+		divCardHeader.classList.add('bg-warning');
+	}
+	else {
+		divCardHeader.classList.add('bg-success');
+	}
+	const documentoText = `${producao.documentoType} ${producao.documentoType === 'mandado' ? '- ' + producao.mandadoType : ''}`;
 	divCardHeader.textContent = documentoText;
 
 	// Corpo do card
@@ -155,15 +275,43 @@ function criarCards(producao) {
 
 	// Botão para excluir
 	const btnCard = document.createElement('button');
-	btnCard.classList.add('btn', 'btn-primary');
+	btnCard.classList.add('btn');
+	if (producao.documentoType === 'medida') {
+		btnCard.classList.add('btn-primary');
+	} else if (producao.documentoType === 'mandado') {
+		btnCard.classList.add('btn-warning');
+	}
+	else {
+		btnCard.classList.add('btn-success');
+	}
 	btnCard.setAttribute('id', producao.id);
 	btnCard.textContent = "Excluir";
-	btnCard.addEventListener('click', () => excluirCard(producao.id));
+	btnCard.addEventListener('click', () => {
+		excluirCard(producao)
+	});
+
+	// Botão para excluir
+	const btnEditarCard = document.createElement('button');
+	btnEditarCard.classList.add('btn');
+	if (producao.documentoType === 'medida') {
+		btnEditarCard.classList.add('btn-primary', 'ms-2');
+	} else if (producao.documentoType === 'mandado') {
+		btnEditarCard.classList.add('btn-warning');
+	}
+	else {
+		btnEditarCard.classList.add('btn-success');
+	}
+	btnEditarCard.setAttribute('id', producao.id);
+	btnEditarCard.textContent = "Editar";
+	btnEditarCard.addEventListener('click', () => {
+		editarCard(producao)
+	});
 
 	// Montando o card
 	divCardBody.appendChild(textData);
 	divCardBody.appendChild(textQtd);
 	divCardBody.appendChild(btnCard);
+	divCardBody.appendChild(btnEditarCard);
 	divCard.appendChild(divCardHeader);
 	divCard.appendChild(divCardBody);
 
@@ -171,5 +319,4 @@ function criarCards(producao) {
 	divProducao.appendChild(divCard);
 }
 
-
-exibirCardNaTela();
+exibirCardNaTela(listaProducao);

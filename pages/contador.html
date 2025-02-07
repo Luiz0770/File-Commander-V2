@@ -78,17 +78,17 @@
                         <div id="radios-section" style="display:none;">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="mandadoType" id="radio1"
-                                    value="cumprido">
+                                    value="Cumprido">
                                 <label class="form-check-label" for="radio1">Cumprido</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="mandadoType" id="radio2"
-                                    value="aCumprir">
+                                    value="Á Cumprir">
                                 <label class="form-check-label" for="radio2">À Cumprir</label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="mandadoType" id="radio3"
-                                    value="prisao">
+                                    value="Prisao">
                                 <label class="form-check-label" for="radio3">Prisão Preventina</label>
                             </div>
                         </div>
@@ -96,6 +96,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-editar">Atualizar</button>
                         <button type="button" class="btn btn-success" id="btn-salvar">Salvar</button>
                     </div>
                 </div>
@@ -105,17 +106,26 @@
     <!-- Fim Modal -->
 
     <!-- Cards -->
-    <div id="producao">
-        <!-- <div class="card">
-            <div class="card-header bg-primary text-white">
-                ALVARÁ
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">DIA: <span id="data">5/1/2025</span></h5>
-                <p class="card-text">Quantidade de documentos: <span id="qtd-producao">85</span></p>
-                <button class="btn btn-primary" id="btn-card">Excluir</button>
-            </div>
-        </div> -->
+    <div class="d-flex flex-column gap-3">
+        <h3 class="fs-1 text-center">Produção</h3>
+        <select class="mb-2 form-select" id="selectFiltro">
+            <option value="0" selected>Selecione um Filtro...</option>
+            <option value="alvara">ALVARÁ</option>
+            <option value="mandado">MANDADO</option>
+            <option value="medida">MEDIDA</option>
+        </select>
+        <div id="producao">
+            <!-- <div class="card">
+                <div class="card-header bg-primary text-white">
+                    ALVARÁ
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">DIA: <span id="data">5/1/2025</span></h5>
+                    <p class="card-text">Quantidade de documentos: <span id="qtd-producao">85</span></p>
+                    <button class="btn btn-primary" id="btn-card">Excluir</button>
+                </div>
+            </div> -->
+        </div>
     </div>
     <!-- Fim Cards -->
 
